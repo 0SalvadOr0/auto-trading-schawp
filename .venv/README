@@ -1,4 +1,6 @@
-clone the repo with git clone https://github.com/0SalvadOr0/auto-trading-schawp
+clone the repo with 
+
+git clone https://github.com/0SalvadOr0/auto-trading-schawp
 
 then run pip install numpy, pandas, loguru, base64, requests, webbroswer
 
