@@ -1,3 +1,4 @@
+# data_fetcher.py
 import requests
 import pandas as pd
 
@@ -21,12 +22,3 @@ class DataFetcher:
             else:
                 print(f"Failed to fetch data for {symbol}")
         return data
-
-# Example usage
-if __name__ == "__main__":
-    symbols = ["AAPL", "MSFT", "GOOGL"]
-    access_token = "YOUR_ACCESS_TOKEN"
-    fetcher = DataFetcher(symbols, access_token)
-    data = fetcher.fetch_data()
-    for symbol, df in data.items():
-        df.to_csv(f"{symbol}.csv")
