@@ -12,12 +12,3 @@ class TradingSignals:
         self.df['BuyOrder'] = self.df['BuyEntryPrice'].notna()
         self.df['SellOrder'] = self.df['SellEntryPrice'].notna()
         return self.df
-
-# Example usage
-if __name__ == "__main__":
-    symbols = ["AAPL", "GOOGL", "MSFT"]  # Aggiungi i simboli che desideri
-    for symbol in symbols:
-        df = pd.read_csv(f"{symbol}_trend.csv")
-        signals = TradingSignals(df)
-        df = signals.generate_signals()
-        df.to_csv(f"{symbol}_signals.csv")

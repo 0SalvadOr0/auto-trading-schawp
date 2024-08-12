@@ -1,23 +1,26 @@
 import requests
 import pandas as pd
+from loguru import logger
 
 class DataFetcher:
-    def __init__(self, symbols, access_token):
-        self.symbols = symbols
+    def __init__(self, access_token):
         self.access_token = access_token
 
-    def fetch_data(self):
+    def fetch_data(self, symbols):
         data = {}
-        for symbol in self.symbols:
+        for symbol in symbols:
             url = f"https://api.schwabapi.com/v1/marketdata/{symbol}/quotes"
             headers = {
                 "Authorization": f"Bearer {self.access_token}"
             }
             response = requests.get(url, headers=headers)
             if response.status_code == 200:
-                json_data = response.json()
-                df = pd.DataFrame(json_data)
-                data[symbol] = df
+                try:
+                    json_data = response.json()
+                    df = pd.DataFrame([json_data])  # Assicurati che json_data sia in un formato accettabile
+                    data[symbol] = df
+                except ValueError as e:
+                    logger.error(f"Errore nel parsing dei dati per {symbol}: {e}")
             else:
-                print(f"Failed to fetch data for {symbol}")
+                logger.error(f"Failed to fetch data for {symbol}: {response.status_code} - {response.text}")
         return data

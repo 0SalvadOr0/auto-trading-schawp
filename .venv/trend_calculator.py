@@ -7,12 +7,3 @@ class TrendCalculator:
     def calculate_trend(self):
         self.df['Trend'] = self.df['Close'].diff().apply(lambda x: 1 if x > 0 else (-1 if x < 0 else 0))
         return self.df
-
-# Example usage
-if __name__ == "__main__":
-    symbols = ["AAPL", "GOOGL", "MSFT"]  # Aggiungi i simboli che desideri
-    for symbol in symbols:
-        df = pd.read_csv(f"{symbol}.csv")
-        calculator = TrendCalculator(df)
-        df = calculator.calculate_trend()
-        df.to_csv(f"{symbol}_trend.csv")
