@@ -1,10 +1,9 @@
-# trading_bot.py
 import os
 import base64
 import requests
 import webbrowser
 from loguru import logger
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -22,6 +21,7 @@ class TradingBot:
             '10min': 10,
             '15min': 15
         }
+        self.token_expiry_time = None
 
     def construct_init_auth_url(self):
         app_key = "7K4OGus81oiQTwwOGTSWMMi7II3a5AOK"
@@ -53,7 +53,30 @@ class TradingBot:
             data=payload,
         )
         init_tokens_dict = init_token_response.json()
+        self.token_expiry_time = datetime.now() + timedelta(minutes=30)
         return init_tokens_dict
+
+    def refresh_token(self, refresh_token):
+        app_key = "7K4OGus81oiQTwwOGTSWMMi7II3a5AOK"
+        app_secret = "DyYTqL4cWdLuPEHH"
+        credentials = f"{app_key}:{app_secret}"
+        base64_credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
+        headers = {
+            "Authorization": f"Basic {base64_credentials}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        payload = {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+        }
+        response = requests.post(
+            url="https://api.schwabapi.com/v1/oauth/token",
+            headers=headers,
+            data=payload,
+        )
+        new_tokens_dict = response.json()
+        self.token_expiry_time = datetime.now() + timedelta(minutes=30)
+        return new_tokens_dict
 
     def is_trading_time(self):
         now = datetime.now().time()
@@ -123,6 +146,7 @@ class TradingBot:
         logger.debug(init_tokens_dict)
 
         access_token = init_tokens_dict['access_token']
+        refresh_token = init_tokens_dict['refresh_token']
         fetcher = DataFetcher(self.symbols, access_token)
         data = fetcher.fetch_data()
         for symbol, df in data.items():
@@ -141,6 +165,12 @@ class TradingBot:
 
             # Plot trends in real-time
             self.plot_trends(df, self.time_intervals)
+
+            # Refresh token if it's about to expire
+            if datetime.now() >= self.token_expiry_time - timedelta(minutes=5):
+                new_tokens_dict = self.refresh_token(refresh_token)
+                access_token = new_tokens_dict['access_token']
+                refresh_token = new_tokens_dict['refresh_token']
 
         return "Done!"
 
