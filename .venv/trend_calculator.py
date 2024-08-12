@@ -10,7 +10,9 @@ class TrendCalculator:
 
 # Example usage
 if __name__ == "__main__":
-    df = pd.read_csv("AAPL.csv")
-    calculator = TrendCalculator(df)
-    df = calculator.calculate_trend()
-    df.to_csv("AAPL_trend.csv")
+    symbols = ["AAPL", "GOOGL", "MSFT"]  # Aggiungi i simboli che desideri
+    for symbol in symbols:
+        df = pd.read_csv(f"{symbol}.csv")
+        calculator = TrendCalculator(df)
+        df = calculator.calculate_trend()
+        df.to_csv(f"{symbol}_trend.csv")

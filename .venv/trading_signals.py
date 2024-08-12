@@ -15,7 +15,9 @@ class TradingSignals:
 
 # Example usage
 if __name__ == "__main__":
-    df = pd.read_csv("AAPL_trend.csv")
-    signals = TradingSignals(df)
-    df = signals.generate_signals()
-    df.to_csv("AAPL_signals.csv")
+    symbols = ["AAPL", "GOOGL", "MSFT"]  # Aggiungi i simboli che desideri
+    for symbol in symbols:
+        df = pd.read_csv(f"{symbol}_trend.csv")
+        signals = TradingSignals(df)
+        df = signals.generate_signals()
+        df.to_csv(f"{symbol}_signals.csv")

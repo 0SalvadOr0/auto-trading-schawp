@@ -1,4 +1,3 @@
-# data_fetcher.py
 import requests
 import pandas as pd
 
