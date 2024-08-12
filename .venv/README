@@ -1,0 +1,14 @@
+clone the repo with git clone https://github.com/0SalvadOr0/auto-trading-schawp
+
+then run pip install numpy, pandas, loguru, base64, requests, webbroswer
+
+then enter in the folder of auto-trading-schawp and enter in .venv
+
+open trading_bot.py and replace 
+
+def place_order(self, symbol, quantity, order_type, access_token):
+    account_id = "YOUR_ACCOUNT_ID"
+the variable need to be changed with your account client id 
+
+
+run python trading_bot.py
