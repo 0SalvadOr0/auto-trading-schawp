@@ -13,7 +13,6 @@ from trading_signals import TradingSignals
 
 class TradingBot:
     def __init__(self):
-        self.symbols = self.get_all_symbols()
         self.time_intervals = {
             '1min': 1,
             '3min': 3,
@@ -22,16 +21,6 @@ class TradingBot:
             '15min': 15
         }
         self.token_expiry_time = None
-
-    def get_all_symbols(self):
-        url = "https://api.schwabapi.com/v1/marketdata/symbols"
-        response = requests.get(url)
-        if response.status_code == 200:
-            symbols = response.json()
-            return [symbol['symbol'] for symbol in symbols]
-        else:
-            logger.error(f"Failed to fetch symbols: {response.status_code} - {response.text}")
-            return []
 
     def construct_init_auth_url(self):
         app_key = "7K4OGus81oiQTwwOGTSWMMi7II3a5AOK"
@@ -157,8 +146,8 @@ class TradingBot:
 
         access_token = init_tokens_dict['access_token']
         refresh_token = init_tokens_dict['refresh_token']
-        fetcher = DataFetcher(self.symbols, access_token)
-        data = fetcher.fetch_data()
+        fetcher = DataFetcher(access_token)
+        data = fetcher.fetch_data('$DJI')
         for symbol, df in data.items():
             calculator = TrendCalculator(df)
             df = calculator.calculate_trend()
